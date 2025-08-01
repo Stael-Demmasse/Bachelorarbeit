@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+        "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+        "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+        monospace;
+}
+
+/* Styles pour le contenu Markdown */
+.markdown-content {
+  line-height: 1.6;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content h1:first-child,
+.markdown-content h2:first-child,
+.markdown-content h3:first-child {
+  margin-top: 0;
+}
+
+.markdown-content p {
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+}
+
+.markdown-content li {
+  margin-bottom: 0.25rem;
+}
+
+.markdown-content blockquote {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+}
+
+.markdown-content pre {
+  margin: 0.75rem 0;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.markdown-content code {
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.markdown-content table {
+  margin: 1rem 0;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.markdown-content th,
+.markdown-content td {
+  text-align: left;
+}
+
+.markdown-content a {
+  transition: color 0.2s ease;
+}
+
+.markdown-content strong {
+  font-weight: 600;
+}
+
+.markdown-content em {
+  font-style: italic;
+}
+
+/* Styles pour améliorer la visibilité en mode clair */
+.markdown-content:not(.dark) {
+  color: #000000 !important;
+  font-weight: 500;
+}
+
+.markdown-content:not(.dark) h1,
+.markdown-content:not(.dark) h2,
+.markdown-content:not(.dark) h3,
+.markdown-content:not(.dark) h4,
+.markdown-content:not(.dark) h5,
+.markdown-content:not(.dark) h6 {
+  color: #000000 !important;
+  font-weight: 700;
+}
+
+.markdown-content:not(.dark) p,
+.markdown-content:not(.dark) li,
+.markdown-content:not(.dark) td,
+.markdown-content:not(.dark) th {
+  color: #000000 !important;
+  font-weight: 500;
+}
+
+.markdown-content:not(.dark) strong {
+  color: #000000 !important;
+  font-weight: 800;
+}
+
+.markdown-content:not(.dark) em {
+  color: #1a1a1a !important;
+  font-weight: 500;
+}
+
+.markdown-content:not(.dark) code {
+  color: #000000 !important;
+  background-color: #e5e5e5 !important;
+  font-weight: 600;
+}
+
+.markdown-content:not(.dark) pre {
+  color: #000000 !important;
+  background-color: #f0f0f0 !important;
+}
+
+.markdown-content:not(.dark) blockquote {
+  color: #1a1a1a !important;
+  background-color: #f8f8f8 !important;
+  border-left-color: #666666 !important;
+  font-weight: 500;
+}

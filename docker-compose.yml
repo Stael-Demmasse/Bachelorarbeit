@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: chatbot_mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - chatbot-network
+
+  backend:
+    build: ./backend
+    container_name: chatbot_backend
+    restart: unless-stopped
+    environment:
+      - MONGODB_URL=mongodb://admin:password@mongodb:27017/chatbot?authSource=admin
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    depends_on:
+      - mongodb
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/uploads:/app/uploads
+    networks:
+      - chatbot-network
+
+  frontend:
+    build: ./frontend
+    container_name: chatbot_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - chatbot-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  chatbot-network:
+    driver: bridge

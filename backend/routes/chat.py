@@ -18,7 +18,7 @@ async def chat_endpoint(
     current_user: User = Depends(get_current_user)
 ):
     """Main chat endpoint supporting multiple AI models"""
-    db = get_database()
+    db = await get_database()
     
     try:
         # Generate message ID
@@ -181,7 +181,7 @@ async def chat_endpoint(
 @router.get("/sessions", response_model=List[ChatSession])
 async def get_chat_sessions(current_user: User = Depends(get_current_user)):
     """Get all chat sessions for the current user"""
-    db = get_database()
+    db = await get_database()
     
     try:
         # Get unique sessions with latest message and AI response
@@ -255,7 +255,7 @@ async def delete_session(
     current_user: User = Depends(get_current_user)
 ):
     """Delete a chat session and all its messages"""
-    db = get_database()
+    db = await get_database()
     
     try:
         # Delete all messages in the session
@@ -282,7 +282,7 @@ async def get_chat_history(
     current_user: User = Depends(get_current_user)
 ):
     """Get chat history for a specific session"""
-    db = get_database()
+    db = await get_database()
     
     try:
         messages_cursor = db.chat_messages.find({
@@ -304,7 +304,7 @@ async def clear_chat_history(
     current_user: User = Depends(get_current_user)
 ):
     """Clear chat history for a specific session"""
-    db = get_database()
+    db = await get_database()
     
     try:
         result = await db.chat_messages.delete_many({

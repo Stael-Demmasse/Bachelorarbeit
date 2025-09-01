@@ -16,10 +16,14 @@ async def connect_to_mongo():
     try:
         db_instance.client = AsyncIOMotorClient(MONGO_URL)
         db_instance.database = db_instance.client[DB_NAME]
+        # Test the connection
+        await db_instance.client.admin.command('ping')
         logger.info("Connected to MongoDB")
     except Exception as e:
         logger.error(f"Error connecting to MongoDB: {e}")
-        raise
+        # Don't raise the exception to allow the app to start
+        # The connection will be retried when needed
+        pass
 
 async def close_mongo_connection():
     """Close database connection"""
@@ -30,6 +34,16 @@ async def close_mongo_connection():
     except Exception as e:
         logger.error(f"Error disconnecting from MongoDB: {e}")
 
-def get_database():
-    """Get database instance"""
-    return db_instance.database
+async def get_database():
+    """Get database instance with reconnection logic for serverless environment"""
+    # Always create a fresh connection for serverless functions
+    try:
+        # Create a new client for each request in serverless environment
+        client = AsyncIOMotorClient(MONGO_URL)
+        database = client[DB_NAME]
+        # Test the connection
+        await client.admin.command('ping')
+        return database
+    except Exception as e:
+        logger.error(f"Failed to connect to database: {e}")
+        return None

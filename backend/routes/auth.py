@@ -12,7 +12,10 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 @router.post("/register", response_model=UserResponse)
 async def register_user(user_data: UserCreate):
     """Register a new user"""
-    db = get_database()
+    db = await get_database()
+    if db is None:
+        logger.error("Database connection is None")
+        raise HTTPException(status_code=500, detail="Erreur de connexion à la base de données")
     
     # Check if username already exists
     existing_user = await db.users.find_one({"username": user_data.username})
@@ -46,7 +49,10 @@ async def register_user(user_data: UserCreate):
 @router.post("/login", response_model=Token)
 async def login_user(user_data: UserLogin):
     """Login user and return access token"""
-    db = get_database()
+    db = await get_database()
+    if db is None:
+        logger.error("Database connection is None")
+        raise HTTPException(status_code=500, detail="Erreur de connexion à la base de données")
     
     # Find user by username
     user = await db.users.find_one({"username": user_data.username})

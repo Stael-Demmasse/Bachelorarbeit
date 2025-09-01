@@ -59,7 +59,7 @@ app.include_router(files_router, prefix="/api")
 
 @app.get("/")
 async def root():
-    """Root endpoint"""
+    """Root endpoint with API information"""
     return {
         "message": "AI Chatbot API",
         "version": API_VERSION,
@@ -70,9 +70,30 @@ async def root():
             "auth": "/api/auth",
             "chat": "/api/chat",
             "status": "/api/status",
-            "files": "/api/files"
+            "files": "/api/files",
+            "test-db": "/test-db"
         }
     }
+
+@app.get("/test-db")
+async def test_database():
+    """Test database connection"""
+    try:
+        from config.database import get_database
+        db = await get_database()
+        if db is None:
+            return {"status": "error", "message": "Database connection is None"}
+        
+        # Test a simple operation
+        result = await db.list_collection_names()
+        return {
+            "status": "success", 
+            "message": "Database connection successful",
+            "collections": result
+        }
+    except Exception as e:
+        logger.error(f"Database test error: {str(e)}")
+        return {"status": "error", "message": f"Database error: {str(e)}"}
 
 if __name__ == "__main__":
     logger.info(f"Starting server on {HOST}:{PORT}")

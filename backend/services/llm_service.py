@@ -95,7 +95,7 @@ async def call_gemini_api(message: str) -> tuple[str, float]:
         
         async with aiohttp.ClientSession() as session:
             async with session.post(
-                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key={GEMINI_API_KEY}",
+                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={GEMINI_API_KEY}",
                 headers=headers,
                 json=payload
             ) as response:

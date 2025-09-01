@@ -12,7 +12,7 @@ router = APIRouter(prefix="/status", tags=["Status"])
 @router.post("/", response_model=StatusCheck)
 async def create_status_check(status_data: StatusCheckCreate):
     """Create a new status check entry"""
-    db = get_database()
+    db = await get_database()
     
     try:
         status_id = str(uuid.uuid4())
@@ -36,7 +36,7 @@ async def create_status_check(status_data: StatusCheckCreate):
 @router.get("/", response_model=List[StatusCheck])
 async def get_status_checks():
     """Get all status checks"""
-    db = get_database()
+    db = await get_database()
     
     try:
         status_cursor = db.status_checks.find().sort("timestamp", -1).limit(100)

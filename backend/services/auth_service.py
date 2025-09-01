@@ -1,5 +1,5 @@
 import hashlib
-import jwt
+from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional
 from fastapi import HTTPException, Depends
@@ -31,7 +31,7 @@ def verify_token(token: str) -> Optional[dict]:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    except jwt.InvalidTokenError:
+    except JWTError:
         return None
 
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
@@ -48,7 +48,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         raise HTTPException(status_code=401, detail="Token invalide")
     
     # Get user from database
-    db = get_database()
+    db = await get_database()
     user = await db.users.find_one({"id": user_id})
     if not user:
         raise HTTPException(status_code=401, detail="Utilisateur non trouvé")

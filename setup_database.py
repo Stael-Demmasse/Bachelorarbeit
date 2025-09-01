@@ -18,32 +18,24 @@ import sys
 from datetime import datetime
 import getpass
 
-# Configuration par défaut
+# Configuration par défaut pour MongoDB Atlas
 DEFAULT_CONFIG = {
-    'host': 'localhost',
-    'port': 27017,
+    'atlas_url': 'mongodb+srv://demmassetemgouastael:FxtnMjDfAO41ioww@cluster0.lpyb7f2.mongodb.net',
     'database_name': 'chatbot_db',
-    'app_username': 'chatbot_user',
-    'app_password': 'chatbot_app_password_2025'
+    'app_username': 'demmassetemgouastael',
+    'app_password': 'FxtnMjDfAO41ioww'
 }
 
 def get_user_config():
     """Demande la configuration à l'utilisateur"""
-    print("=== Configuration de la base de données MongoDB ===")
+    print("=== Configuration de la base de données MongoDB Atlas ===")
     print("Appuyez sur Entrée pour utiliser les valeurs par défaut\n")
     
     config = {}
     
-    # Host
-    host = input(f"Host MongoDB [{DEFAULT_CONFIG['host']}]: ").strip()
-    config['host'] = host if host else DEFAULT_CONFIG['host']
-    
-    # Port
-    port_input = input(f"Port MongoDB [{DEFAULT_CONFIG['port']}]: ").strip()
-    try:
-        config['port'] = int(port_input) if port_input else DEFAULT_CONFIG['port']
-    except ValueError:
-        config['port'] = DEFAULT_CONFIG['port']
+    # URL Atlas
+    atlas_url = input(f"URL MongoDB Atlas [{DEFAULT_CONFIG['atlas_url']}]: ").strip()
+    config['atlas_url'] = atlas_url if atlas_url else DEFAULT_CONFIG['atlas_url']
     
     # Nom de la base de données
     db_name = input(f"Nom de la base de données [{DEFAULT_CONFIG['database_name']}]: ").strip()
@@ -64,16 +56,16 @@ def get_user_config():
     
     return config
 
-def test_connection(host, port):
-    """Test la connexion à MongoDB"""
+def test_connection(atlas_url):
+    """Teste la connexion à MongoDB Atlas"""
     try:
-        client = MongoClient(host, port, serverSelectionTimeoutMS=5000)
+        client = MongoClient(atlas_url, serverSelectionTimeoutMS=5000)
         client.admin.command('ping')
-        print(f"✅ Connexion réussie à MongoDB sur {host}:{port}")
+        print(f"✅ Connexion réussie à MongoDB Atlas")
         return client
     except ConnectionFailure:
-        print(f"❌ Impossible de se connecter à MongoDB sur {host}:{port}")
-        print("Vérifiez que MongoDB est démarré et accessible.")
+        print(f"❌ Impossible de se connecter à MongoDB Atlas")
+        print("Vérifiez votre URL de connexion et votre accès réseau.")
         return None
 
 def create_database_and_user(client, config):
@@ -82,28 +74,14 @@ def create_database_and_user(client, config):
         # Sélectionner la base de données
         db = client[config['database_name']]
         
-        # Créer l'utilisateur de l'application
-        try:
-            db.command("createUser", 
-                      config['app_username'],
-                      pwd=config['app_password'],
-                      roles=[
-                          {
-                              "role": "readWrite",
-                              "db": config['database_name']
-                          }
-                      ])
-            print(f"✅ Utilisateur '{config['app_username']}' créé avec succès")
-        except OperationFailure as e:
-            if "already exists" in str(e):
-                print(f"⚠️  L'utilisateur '{config['app_username']}' existe déjà")
-            else:
-                raise e
+        # Pour MongoDB Atlas, l'utilisateur existe déjà, on ignore cette étape
+        print(f"✅ Base de données '{config['database_name']}' sélectionnée")
+        print(f"✅ Utilisateur '{config['app_username']}' (géré par Atlas)")
         
         return db
         
     except Exception as e:
-        print(f"❌ Erreur lors de la création de l'utilisateur: {e}")
+        print(f"❌ Erreur lors de l'accès à la base de données: {e}")
         return None
 
 def create_collections_with_validation(db):
@@ -587,14 +565,15 @@ def insert_sample_data(db):
 def generate_connection_string(config):
     """Génère la chaîne de connexion pour l'application"""
     
-    connection_string = f"mongodb://{config['app_username']}:{config['app_password']}@{config['host']}:{config['port']}/{config['database_name']}"
+    # Pour Atlas, on utilise l'URL complète avec la base de données
+    connection_string = f"{config['atlas_url']}/{config['database_name']}?retryWrites=true&w=majority"
     
     print("\n" + "="*60)
     print("CONFIGURATION TERMINÉE")
     print("="*60)
     print(f"Base de données: {config['database_name']}")
     print(f"Utilisateur: {config['app_username']}")
-    print(f"Host: {config['host']}:{config['port']}")
+    print(f"MongoDB Atlas: {config['atlas_url']}")
     print("\nChaîne de connexion pour votre application:")
     print(f"MONGO_URL={connection_string}")
     print("\nAjoutez cette ligne à votre fichier .env")
@@ -609,7 +588,7 @@ def main():
     config = get_user_config()
     
     # Tester la connexion
-    client = test_connection(config['host'], config['port'])
+    client = test_connection(config['atlas_url'])
     if not client:
         sys.exit(1)
     

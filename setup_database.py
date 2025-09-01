@@ -22,8 +22,8 @@ import getpass
 DEFAULT_CONFIG = {
     'atlas_url': 'mongodb+srv://demmassetemgouastael:FxtnMjDfAO41ioww@cluster0.lpyb7f2.mongodb.net',
     'database_name': 'chatbot_db',
-    'app_username': 'demmassetemgouastael',
-    'app_password': 'FxtnMjDfAO41ioww'
+    'app_username': 'username',
+    'app_password': 'password'
 }
 
 def get_user_config():

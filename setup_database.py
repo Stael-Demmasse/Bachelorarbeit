@@ -20,7 +20,7 @@ import getpass
 
 # Configuration par défaut pour MongoDB Atlas
 DEFAULT_CONFIG = {
-    'atlas_url': 'mongodb+srv://demmassetemgouastael:FxtnMjDfAO41ioww@cluster0.lpyb7f2.mongodb.net',
+    'atlas_url': 'MongoURI',
     'database_name': 'chatbot_db',
     'app_username': 'username',
     'app_password': 'password'
